@@ -53,36 +53,35 @@
             z-index: 4;
         }
         
-        .hour-hand, .minute-hand, .second-hand {
+        .hand {
             position: absolute;
-            top: 50%;
+            bottom: 50%;
             left: 50%;
-            transform-origin: left center;
-            z-index: 3;
+            transform-origin: 50% 100%;
         }
         
         .hour-hand {
-            width: 60px;
-            height: 6px;
-            margin: -3px 0 0 0;
+            width: 6px;
+            height: 60px;
+            margin-left: -3px;
             background-color: #000;
             border-radius: 3px;
             z-index: 1;
         }
         
         .minute-hand {
-            width: 80px;
-            height: 6px;
-            margin: -3px 0 0 0;
+            width: 6px;
+            height: 80px;
+            margin-left: -3px;
             background-color: #000;
             border-radius: 3px;
             z-index: 2;
         }
         
         .second-hand {
-            width: 90px;
-            height: 2px;
-            margin: -1px 0 0 0;
+            width: 2px;
+            height: 90px;
+            margin-left: -1px;
             background-color: #ff0000;
             border-radius: 1px;
             z-index: 3;
@@ -126,9 +125,9 @@
             <div class="clock-face" id="clock-face">
                 <!-- Hour numbers and dots will be added here -->
                 <!-- Minute ticks will be added here -->
-                <div class="hour-hand" id="hour"></div>
-                <div class="minute-hand" id="minute"></div>
-                <div class="second-hand" id="second"></div>
+                <div class="hand hour-hand" id="hour"></div>
+                <div class="hand minute-hand" id="minute"></div>
+                <div class="hand second-hand" id="second"></div>
                 <div class="clock-center"></div>
             </div>
         </div>
@@ -195,20 +194,23 @@
         function updateClock() {
             const now = new Date();
             
-            // Update clock hands
-            const seconds = now.getSeconds();
+            // Get hours, minutes, and seconds
+            const hours = now.getHours();
             const minutes = now.getMinutes();
-            const hours = now.getHours() % 12;
+            const seconds = now.getSeconds();
             
-            // Calculate rotation angles
-            const secondDegrees = ((seconds / 60) * 360);
-            const minuteDegrees = ((minutes / 60) * 360) + ((seconds / 60) * 6);
-            const hourDegrees = ((hours / 12) * 360) + ((minutes / 60) * 30);
+            // Calculate angles
+            // 30 degrees per hour, plus additional movement based on minutes
+            const hourAngle = (hours % 12) * 30 + minutes * 0.5;
+            // 6 degrees per minute
+            const minuteAngle = minutes * 6;
+            // 6 degrees per second
+            const secondAngle = seconds * 6;
             
             // Apply rotations
-            secondHand.style.transform = `rotate(${secondDegrees}deg)`;
-            minuteHand.style.transform = `rotate(${minuteDegrees}deg)`;
-            hourHand.style.transform = `rotate(${hourDegrees}deg)`;
+            hourHand.style.transform = `rotate(${hourAngle}deg)`;
+            minuteHand.style.transform = `rotate(${minuteAngle}deg)`;
+            secondHand.style.transform = `rotate(${secondAngle}deg)`;
             
             // Update date display
             const options = { 
